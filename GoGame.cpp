@@ -6,8 +6,8 @@ int board[] = {
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
     7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
     7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
-    7, 0, 0, 1, 0, 0, 0, 0, 0, 0, 7,
-    7, 0, 0, 0, 2, 0, 0, 0, 0, 0, 7,
+    7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+    7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
     7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
     7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
     7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
@@ -31,8 +31,9 @@ void print_board(){
             square = row * board_range + col;
             stone = board[square];
 
+            //print rank
             if (col == 0 && row > 0 && row < board_range - 1){
-                cout <<" " <<10-row;
+                cout <<" " <<10-row <<" ";
             }
             //print board
             cout << pieces[stone] <<" ";
@@ -40,7 +41,8 @@ void print_board(){
         //print new line
         cout <<"\n";
     }
-    cout <<"    a b c d e f g h i";
+    //print notation
+    cout <<"     a b c d e f g h i";
 }
 
 int main(){
