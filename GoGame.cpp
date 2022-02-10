@@ -1,10 +1,28 @@
 #include <iostream>
+#include <cmath>
+#include <vector>
 #include "board.cpp"
 using namespace std;
 
-void print_board(int board[], int board_size, char pieces[], char files[]){
+//stones
+int EMPTY = 0;
+int BLACK = 1;
+int WHITE = 2;
+int MARKER = 4;
+int OFFBOARD = 7;
+int LIBERTY = 8;
 
-    int board_range = board_size + 2;
+//Variable
+int board_size, board_range;
+char pieces[] = {'.','#','o',' ',' ','b','w',' ','+'};
+char files[] = "     a b c d e f g h i j k l m n o p q r s t";
+
+//count
+vector<int> liberties = {}, block = {};
+
+//define function
+void print_board(int board[], int board_size, char pieces[], char files[]){
+    board_range = board_size + 2;
     int square, stone, rank;
 
     // loop rows
@@ -28,23 +46,83 @@ void print_board(int board[], int board_size, char pieces[], char files[]){
     }
     //print files
     for (int i=0; i<board_range*2; i++) cout <<files[i];
+    cout <<endl;
 }
 
-int main(){
-    int board_size;
-    char pieces[] = {'.','#','o',' '};
-    char files[] = "     a b c d e f g h i j k l m n o p q r s t";
+void set_board(int board[], int board_size, int total_size){
+    //duplicate board
+    if (board_size == 9){
+        for (int i=0; i<total_size; i++){
+        board[i] = board_9x9[i];
+        }
+    } else if (board_size == 13){
+        for (int i=0; i<total_size; i++){
+        board[i] = board_13x13[i];
+        }
+    } else if (board_size == 19){
+        for (int i=0; i<total_size; i++){
+        board[i] = board_19x19[i];
+        }
+    }
+}
 
+void count(int board[], int square, int color){ 
+    // init piece
+    int piece = board[square];
+    
+    // skip offboard squares
+    if (piece == OFFBOARD) return;
+    
+    // if there's a stone at square
+    if (piece == color){
+        // save stone's coordinate
+        block.push_back(square);
+
+        board[square] |= MARKER;
+
+        count(board, square - board_range , color);
+        count(board, square - 1 , color);
+        count(board, square + board_range, color);
+        count(board, square + 1, color);
+        
+        // // look for neighbours recursively
+        // cout <<"N : " <<square - board_range <<endl;
+        // board[square - board_range] = 8;
+
+        // cout <<"E : " <<square - 1 <<endl;   
+        // board[square - 1] = 8; 
+
+        // cout <<"S : " <<square + board_range <<endl;
+        // board[square + board_range] = 8;
+
+        // cout <<"W : " <<square + 1 <<endl;         
+        // board[square + 1] = 8; 
+    } 
+    else if (piece == EMPTY) {
+        board[square] |= LIBERTY;
+        liberties.push_back(square);
+    }
+}
+
+int main() {
     //loop ask board size
     do {
     cout << "Select board size (9, 13, 19) : ";
     cin >> board_size;
     }while (board_size != 9 && board_size != 13 && board_size != 19);
 
-    //print board
-    if (board_size == 9) print_board(board_9x9, board_size, pieces, files);
-    else if (board_size == 13) print_board(board_13x13, board_size, pieces, files);
-    else if (board_size == 19) print_board(board_19x19, board_size, pieces, files);
+    //set board size
+    int total_size = (int) pow(board_size+2, 2);
+    int board[total_size];
+    set_board(board, board_size, total_size);
+
+    print_board(board, board_size, pieces, files);
+
+    count(board, 82, BLACK);
+
+    // for (int i=0; i<block.size(); i++) board[i] = 0;
+
+    print_board(board, board_size, pieces, files);
 
     return 0;
 }
