@@ -85,22 +85,22 @@ void count(int board[], int square, int color){
         count(board, square + board_range, color);
         count(board, square + 1, color);
         
-        // // look for neighbours recursively
-        // cout <<"N : " <<square - board_range <<endl;
-        // board[square - board_range] = 8;
-
-        // cout <<"E : " <<square - 1 <<endl;   
-        // board[square - 1] = 8; 
-
-        // cout <<"S : " <<square + board_range <<endl;
-        // board[square + board_range] = 8;
-
-        // cout <<"W : " <<square + 1 <<endl;         
-        // board[square + 1] = 8; 
     } 
     else if (piece == EMPTY) {
         board[square] |= LIBERTY;
         liberties.push_back(square);
+    }
+}
+
+void clear_stone(int board[]){
+    for (int i=0; i<block.size(); i++) board[block[i]] = EMPTY;
+}
+
+void restore_board(int board[]){
+    liberties = {}, block = {};
+
+    for (int i=0; i < board_range*board_range; i++){
+        if (board[i] != OFFBOARD) board[i] &= 3;
     }
 }
 
@@ -120,9 +120,24 @@ int main() {
 
     count(board, 82, BLACK);
 
-    // for (int i=0; i<block.size(); i++) board[i] = 0;
+    clear_stone(board);
 
     print_board(board, board_size, pieces, files);
+
+    // show position
+    for (int i=0; i<block.size(); i++) cout<<block[i] <<" ";
+    cout << "\n";
+    for (int i=0; i<liberties.size(); i++) cout<<liberties[i] <<" ";
+    cout << "\n";
+
+    // // restore board
+    // restore_board(board);
+
+    // print_board(board, board_size, pieces, files);
+
+    // for (int i=0; i<block.size(); i++) cout<<block[i] <<" ";
+    // cout << "\n";
+    // for (int i=0; i<liberties.size(); i++) cout<<liberties[i] <<" ";
 
     return 0;
 }
